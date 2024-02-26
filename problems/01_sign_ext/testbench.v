@@ -19,6 +19,7 @@ sign_ext se(.imm(imm), .ext_imm(ext_imm));
 *   Problem 1:
 *   Define wire 'ext_imm2' with appropriate width.
 */
+wire [31:0]ext_imm2;
 sign_ext2 se2(.imm(imm), .ext_imm(ext_imm2));
 
 wire [31:0]minus_ext_imm;
@@ -29,15 +30,34 @@ wire [31:0]zero;
 *   Problem 2:
 *   Assign sum of 'ext_imm' and 'minus_ext_imm' to zero.
 */
+assign zero = ext_imm + minus_ext_imm;
 
 initial begin
     $dumpvars;      /* Open for dump of signals */
     #2 imm = 5;
+    #2 $display("imm = %d, ext_imm = %d, ext_imm2 = %d, minus_ext_imm = %d, zero = %d",
+        imm, ext_imm, ext_imm2, minus_ext_imm, zero);
+
     #2 imm = 12;
+    #2 $display("imm = %d, ext_imm = %d, ext_imm2 = %d, minus_ext_imm = %d, zero = %d",
+        imm, ext_imm, ext_imm2, minus_ext_imm, zero);
+
     #2 imm = -5;
+    #2 $display("imm = %d, ext_imm = %d, ext_imm2 = %d, minus_ext_imm = %d, zero = %d",
+        imm, ext_imm, ext_imm2, minus_ext_imm, zero);
+
     #2 imm = -12;
+    #2 $display("imm = %d, ext_imm = %d, ext_imm2 = %d, minus_ext_imm = %d, zero = %d",
+        imm, ext_imm, ext_imm2, minus_ext_imm, zero);
+
     #2 imm = 1337;
+    #2 $display("imm = %d, ext_imm = %d, ext_imm2 = %d, minus_ext_imm = %d, zero = %d",
+        imm, ext_imm, ext_imm2, minus_ext_imm, zero);
+
     #2 imm = -2019;
+    #2 $display("imm = %d, ext_imm = %d, ext_imm2 = %d, minus_ext_imm = %d, zero = %d",
+        imm, ext_imm, ext_imm2, minus_ext_imm, zero);
+
     #2 $finish;
 end
 
