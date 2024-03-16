@@ -1,4 +1,5 @@
-module sign_ext(
+module sign_ext
+(
     input [11:0]imm,
     output [31:0]ext_imm
 );
