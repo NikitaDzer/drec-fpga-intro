@@ -1,7 +1,7 @@
 test: runner 
 	./runner
 
-runner: testbench.v negative.v
+runner: testbench.v neg_moore.v neg_mealy.v
 	iverilog $^ -o $@
 
 clean:

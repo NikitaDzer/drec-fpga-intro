@@ -10,9 +10,11 @@ end
 
 reg R = 0;
 reg A = 0;
-wire Q;
+wire Q_moore;
+wire Q_mealy;
 
-negative negative( .clk( clk), .R( R), .A( A), .Q( Q));
+neg_moore neg_moore( .clk( clk), .R( R), .A( A), .Q( Q_moore));
+neg_mealy neg_mealy( .clk( clk), .R( R), .A( A), .Q( Q_mealy));
 
 initial begin
     $dumpvars;
@@ -20,13 +22,13 @@ initial begin
     #1 R = 0;
 
     #1 A = 0; #1
-    $display( "A=%d, Q=%d", A, Q);
+    $display( "A=%d, Q=%d, Q=%d", A, Q_moore, Q_mealy);
     #1 A = 1; #1
-    $display( "A=%d, Q=%d", A, Q);
+    $display( "A=%d, Q=%d, Q=%d", A, Q_moore, Q_mealy);
     #1 A = 1; #1
-    $display( "A=%d, Q=%d", A, Q);
+    $display( "A=%d, Q=%d, Q=%d", A, Q_moore, Q_mealy);
     #1 A = 1; #1
-    $display( "A=%d, Q=%d", A, Q);
+    $display( "A=%d, Q=%d, Q=%d", A, Q_moore, Q_mealy);
 
     $finish;
 end
