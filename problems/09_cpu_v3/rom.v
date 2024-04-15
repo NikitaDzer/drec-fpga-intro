@@ -12,7 +12,7 @@ end
 reg [WIDTH - 1:0]mem[2**ADDR_WIDTH - 1:0];
 
 initial begin
-    $readmemh("samples/fib.txt", mem);
+    $readmemh("samples/fib_riscv.txt", mem);
 end
 
 always @(posedge clk) begin

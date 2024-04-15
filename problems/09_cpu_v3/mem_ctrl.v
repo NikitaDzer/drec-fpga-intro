@@ -8,8 +8,10 @@ module mem_ctrl(
 );
 
 always @(posedge clk) begin
-    if (we) begin
-        $display("[%h] <- %h", addr, data);
+    if (we)
+    begin
+        $display("%-4d mctl> [%h] <- %d", $time, addr, data);
+
         if (addr == 32'h20)
             data_out <= data[15:0];
     end

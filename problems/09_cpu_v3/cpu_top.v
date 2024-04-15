@@ -4,9 +4,18 @@ module cpu_top(
     output [15:0]data_out
 );
 
+localparam ADDR_WIDTH = 5;
+
 wire [31:0]instr_addr;
 wire [31:0]instr_data;
-rom rom(.clk(clk), .addr(instr_addr), .q(instr_data));
+wire [31:0]word_addr = instr_addr >> 2;
+rom #(
+    .ADDR_WIDTH(ADDR_WIDTH)
+) rom(
+    .clk(clk),
+    .addr(word_addr[ADDR_WIDTH-1:0]),
+    .q(instr_data)
+);
 
 wire [31:0]mem_addr;
 wire [31:0]mem_data;

@@ -12,7 +12,7 @@ cpu_top cpu_top(.clk(clk));
 
 initial begin
     $dumpvars;
-    #150 $finish;
+    #90 $finish;
 end
 
 endmodule

@@ -9,16 +9,21 @@ module core(
     output mem_we
 );
 
-reg [31:0]pc = 32'hFFFFFFFF;
-wire [31:0]pc_target = branch_taken ? branch_target : pc + 1;
+reg [31:0]pc = 32'hFFFFFFFC;
+wire [31:0]pc_target = branch_taken ? branch_target : pc + 4;
 wire [31:0]pc_next = (pc == last_pc) ? pc : pc_target;
 
-always @(posedge clk) begin
+always @(posedge clk)
+begin
     pc <= pc_next;
+
+    #2; $display("");
+
 `ifdef __ICARUS__
-    $strobe("[pc = %h] %h", pc, instr);
-    $strobe("taken = %b target = %h", branch_taken, branch_target);
+    $strobe("%-4d core> [pc = %h] %h", $time, pc, instr);
+    $strobe("%-4d core> taken = %b target = %h", $time, branch_taken, branch_target);
 `endif
+
 end
 
 wire [31:0]instr = instr_data;
@@ -34,7 +39,7 @@ wire [4:0]rf_raddr0 = rs1;
 wire [31:0]rf_rdata1;
 wire [4:0]rf_raddr1 = rs2;
 
-wire [31:0]rf_wdata = alu_result;
+wire [31:0]rf_wdata = lr ? pc + 4 : alu_result;
 wire [4:0]rf_waddr = rd;
 wire rf_we;
 
@@ -45,6 +50,7 @@ wire has_imm;
 wire [31:0]alu_result;
 wire [31:0]alu_b_src = has_imm ? imm32 : rf_rdata1;
 wire [2:0]alu_op;
+
 alu alu(
     .src_a(rf_rdata0), .src_b(alu_b_src),
     .op(alu_op),
@@ -58,22 +64,24 @@ reg_file rf(
     .waddr(rf_waddr), .wdata(rf_wdata), .we(rf_we)
 );
 
-wire [11:0]imm12;
-wire [31:0]imm32 = {{20{imm12[11]}}, imm12};
+wire [31:0]imm32;
 
-wire cmp_res = /* Problem 2: comparison result */
-wire branch_taken = /* Problem 2: is branch taken or not ? */
-wire [31:0]branch_target = /* Problem 2: target address bus */
-wire branch;
+wire [31:0]branch_target = direct_branch ? pc + imm32 : alu_result;
+wire branch_taken;
+wire lr;
+wire direct_branch;
 
 control control(
     .instr(instr),
-    .imm12(imm12),
+    .alu_result(alu_result),
+    .imm32(imm32),
     .rf_we(rf_we),
     .alu_op(alu_op),
     .has_imm(has_imm),
     .mem_we(mem_we),
-    .branch(branch)
+    .branch_taken(branch_taken),
+    .lr(lr),
+    .direct_branch(direct_branch)
 );
 
 endmodule
