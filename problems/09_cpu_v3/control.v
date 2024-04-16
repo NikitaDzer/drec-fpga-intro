@@ -115,6 +115,15 @@ always @(*) begin
             $monitor("%-4d ctrl> %s", $time, "AND");
         end
 
+        17'b00000_00_011_0110011: // SLTU
+        begin
+            rf_we = 1'b1;
+            has_imm = 1'b0;
+            alu_op = `ALU_SLTU;
+
+            $monitor("%-4d ctrl> %s", $time, "SLTU");
+        end
+
         17'b00000_01_000_0110011: // MUL 
         begin
             rf_we = 1'b1;
