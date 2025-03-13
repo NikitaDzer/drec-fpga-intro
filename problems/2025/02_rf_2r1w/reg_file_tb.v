@@ -4,7 +4,7 @@
 module testbench;
 
 reg clk   = 1'b0;
-reg rst_n = 1'b0;
+reg rst_n = 1'b1;
 
 always begin
     #1 clk <= ~clk;
