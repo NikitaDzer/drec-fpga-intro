@@ -4,7 +4,7 @@ DEBUG     ?= 0
 
 TB_LIST := fp16u_tb.v
 
-RTL_LIST := fp16mul.v fp16add.v
+RTL_LIST := fp16mul.v
 
 sim: $(TB_LIST) $(RTL_LIST)
 	python3 test.py $(TEST_SIZE) $(TEST_OP) > test.txt

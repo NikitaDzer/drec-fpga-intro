@@ -16,10 +16,17 @@ wire       c_sign = c[15];
 wire [4:0] c_bexp = c[14:10];
 wire [9:0] c_mant = c[9:0];
 
+wire       rmode    = 0;
+wire       overflow = 0;
+wire       invalid  = 0;
+
 fp16`TEST_OP fp16`TEST_OP (
-    .i_a      (a),
-    .i_b      (b),
-    .o_res    (c)
+    .i_a       (a),
+    .i_b       (b),
+    .i_rmode   (rmode),
+    .o_res     (c),
+    .o_overflow(overflow),
+    .o_invalid (invalid)
 );
 
 reg [3*16-1:0] test[`TEST_SIZE];
