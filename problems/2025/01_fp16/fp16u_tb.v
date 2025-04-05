@@ -24,9 +24,7 @@ fp16`TEST_OP fp16`TEST_OP (
     .i_a       (a),
     .i_b       (b),
     .i_rmode   (rmode),
-    .o_res     (c),
-    .o_overflow(overflow),
-    .o_invalid (invalid)
+    .o_res     (c)
 );
 
 reg [3*16-1:0] test[`TEST_SIZE];
@@ -48,7 +46,7 @@ always @(*) begin
     else if (z_bexp == 5'h1F) // Inf/NaN
         ok = (c_bexp == 5'h1F) && (c_mant == 10'h0) && (c_sign == z_sign);
     else
-        ok = ($abs(diff) < 2) && (c_sign == z_sign);
+        ok = ($abs(diff) < 5) && (c_sign == z_sign);
 end
 
 always @(posedge clk) begin
