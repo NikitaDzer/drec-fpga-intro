@@ -1,0 +1,108 @@
+
+fib_riscv.out:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010000 <_start>:
+   10000:	00001137          	lui	x2,0x1
+   10004:	04010113          	addi	x2,x2,64 # 1040 <_start-0xefc0>
+   10008:	008000ef          	jal	10010 <main>
+
+0001000c <_finish>:
+   1000c:	00000063          	beqz	x0,1000c <_finish>
+
+00010010 <main>:
+   10010:	fe010113          	addi	x2,x2,-32
+   10014:	00112e23          	sw	x1,28(x2)
+   10018:	00812c23          	sw	x8,24(x2)
+   1001c:	02010413          	addi	x8,x2,32
+   10020:	fe042623          	sw	x0,-20(x8)
+   10024:	00100793          	li	x15,1
+   10028:	fef42423          	sw	x15,-24(x8)
+   1002c:	fe042223          	sw	x0,-28(x8)
+   10030:	fe042223          	sw	x0,-28(x8)
+   10034:	03c0006f          	j	10070 <main+0x60>
+   10038:	fec42703          	lw	x14,-20(x8)
+   1003c:	fe842783          	lw	x15,-24(x8)
+   10040:	00f707b3          	add	x15,x14,x15
+   10044:	fef42023          	sw	x15,-32(x8)
+   10048:	02000793          	li	x15,32
+   1004c:	fe042703          	lw	x14,-32(x8)
+   10050:	00e7a023          	sw	x14,0(x15)
+   10054:	fe842783          	lw	x15,-24(x8)
+   10058:	fef42623          	sw	x15,-20(x8)
+   1005c:	fe042783          	lw	x15,-32(x8)
+   10060:	fef42423          	sw	x15,-24(x8)
+   10064:	fe442783          	lw	x15,-28(x8)
+   10068:	00178793          	addi	x15,x15,1
+   1006c:	fef42223          	sw	x15,-28(x8)
+   10070:	fe442703          	lw	x14,-28(x8)
+   10074:	00c00793          	li	x15,12
+   10078:	fcf710e3          	bne	x14,x15,10038 <main+0x28>
+   1007c:	00000013          	nop
+   10080:	00000013          	nop
+   10084:	01c12083          	lw	x1,28(x2)
+   10088:	01812403          	lw	x8,24(x2)
+   1008c:	02010113          	addi	x2,x2,32
+   10090:	00008067          	ret
+
+Disassembly of section .eh_frame:
+
+00010094 <.eh_frame>:
+   10094:	0010                	.insn	2, 0x0010
+   10096:	0000                	.insn	2, 0x
+   10098:	0000                	.insn	2, 0x
+   1009a:	0000                	.insn	2, 0x
+   1009c:	00527a03          	.insn	4, 0x00527a03
+   100a0:	7c01                	.insn	2, 0x7c01
+   100a2:	0101                	.insn	2, 0x0101
+   100a4:	00020c1b          	.insn	4, 0x00020c1b
+   100a8:	0024                	.insn	2, 0x0024
+   100aa:	0000                	.insn	2, 0x
+   100ac:	0018                	.insn	2, 0x0018
+   100ae:	0000                	.insn	2, 0x
+   100b0:	ff60                	.insn	2, 0xff60
+   100b2:	ffff                	.insn	2, 0xffff
+   100b4:	0084                	.insn	2, 0x0084
+   100b6:	0000                	.insn	2, 0x
+   100b8:	4400                	.insn	2, 0x4400
+   100ba:	200e                	.insn	2, 0x200e
+   100bc:	8148                	.insn	2, 0x8148
+   100be:	8801                	.insn	2, 0x8801
+   100c0:	4402                	.insn	2, 0x4402
+   100c2:	080c                	.insn	2, 0x080c
+   100c4:	0200                	.insn	2, 0x0200
+   100c6:	c168                	.insn	2, 0xc168
+   100c8:	c844                	.insn	2, 0xc844
+   100ca:	020c                	.insn	2, 0x020c
+   100cc:	4420                	.insn	2, 0x4420
+   100ce:	000e                	.insn	2, 0x000e
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	1b41                	.insn	2, 0x1b41
+   2:	0000                	.insn	2, 0x
+   4:	7200                	.insn	2, 0x7200
+   6:	7369                	.insn	2, 0x7369
+   8:	01007663          	bgeu	x0,x16,14 <_start-0xffec>
+   c:	0011                	.insn	2, 0x0011
+   e:	0000                	.insn	2, 0x
+  10:	1004                	.insn	2, 0x1004
+  12:	7205                	.insn	2, 0x7205
+  14:	3376                	.insn	2, 0x3376
+  16:	6932                	.insn	2, 0x6932
+  18:	7032                	.insn	2, 0x7032
+  1a:	0031                	.insn	2, 0x0031
+
+Disassembly of section .comment:
+
+00000000 <.comment>:
+   0:	3a434347          	.insn	4, 0x3a434347
+   4:	2820                	.insn	2, 0x2820
+   6:	29554e47          	.insn	4, 0x29554e47
+   a:	3120                	.insn	2, 0x3120
+   c:	2e34                	.insn	2, 0x2e34
+   e:	2e32                	.insn	2, 0x2e32
+  10:	0030                	.insn	2, 0x0030

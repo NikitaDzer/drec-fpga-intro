@@ -1,6 +1,6 @@
 `include "config.vh"
 
-module cpu_top(
+module cpu_top (
     input  wire clk,
     input  wire rst_n,
 
@@ -84,6 +84,5 @@ core core(
     .o_mem_mask    (core2xbar_mask  ),
     .i_mem_data    (xbar2core_data  )
 );
-
 endmodule
 

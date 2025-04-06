@@ -1,17 +1,25 @@
-TB_LIST := src/cpu_top_tb.v
+TB_LIST := src/system_top_tb.v
 
 RTL_LIST := 		\
-	src/cpu_top.v	\
-	src/core.v		\
 	src/alu.v		\
-	src/cmp.v		\
-	src/reg_file.v	\
-	src/control.v	\
-	src/imem.v		\
+	src/bu.v		\
+	src/core.v		\
+	src/cpu_top.v	\
+	src/system_top.v	\
+	src/core.v		\
+	src/decoder.v	\
+	src/decoder_imm.v	\
+	src/decoder_rv32i_alu.v	\
+	src/decoder_rv32i_cbu.v	\
+	src/decoder_rv32i_lsu.v	\
+	src/hex_display.v	\
 	src/dmem.v		\
+	src/imem.v		\
+	src/reg_file.v	\
+	src/lsu.v	\
 	src/mem_xbar.v	\
-	src/lsu.v		\
-	src/mux4.v		\
+	src/mmio_xbar.v	\
+	src/sign_ext.v
 
 sim: $(TB_LIST) $(RTL_LIST)
 	iverilog -I./src/ $^ -o sim

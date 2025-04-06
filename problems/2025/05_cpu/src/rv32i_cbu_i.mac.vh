@@ -1,0 +1,8 @@
+`ifndef RV32I_CBU_I_MAC_H
+`define RV32I_CBU_I_MAC_H
+
+`define RV32I_CBU_I_OPCODE_JALR 7'b1100111
+
+`define RV32I_CBU_I_F3_JALR 3'h0
+
+`endif

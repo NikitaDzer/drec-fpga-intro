@@ -1,0 +1,7 @@
+`ifndef RV32I_ALU_U_MAC_H
+`define RV32I_ALU_U_MAC_H
+
+`define RV32I_ALU_U_OPCODE_LUI   7'b0110111
+`define RV32I_ALU_U_OPCODE_AUIPC 7'b0010111
+
+`endif
