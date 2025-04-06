@@ -7,7 +7,7 @@ module lfsr (
 wire [7:0] lfsr_reg;
 assign o_out = lfsr_reg;
 
-wire feedback = lfsr_reg[7] ^ lfsr_reg[5] ^ lfsr_reg[4] ^ lfsr_reg[3] ^ lfsr_reg[0];
+wire feedback = lfsr_reg[7] ^ lfsr_reg[5] ^ lfsr_reg[4] ^ lfsr_reg[3] ^ 1;
 reg wr_bit = 1'b1;
 
 wire       wr_data_en = 0;
