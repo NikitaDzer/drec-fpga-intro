@@ -9,9 +9,6 @@ RTL_LIST := 		\
 	src/core.v		\
 	src/decoder.v	\
 	src/decoder_imm.v	\
-	src/decoder_rv32i_alu.v	\
-	src/decoder_rv32i_cbu.v	\
-	src/decoder_rv32i_lsu.v	\
 	src/hex_display.v	\
 	src/dmem.v		\
 	src/imem.v		\

@@ -124,9 +124,6 @@ lsu lsu (
     .o_mem_we(o_mem_we)
 );
 
-// TODO: plug
-wire [31:0] dmem_data_out;
-
 always @( * ) begin
     case ( wb_sel )
         `WB_SEL_ALU:      dst = alu_res;
