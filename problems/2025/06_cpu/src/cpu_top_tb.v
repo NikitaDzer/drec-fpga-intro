@@ -6,7 +6,7 @@ reg clk   = 1'b0;
 reg rst_n = 1'b0;
 
 always begin
-    #10 clk <= ~clk;
+    #1 clk <= ~clk;
 end
 
 initial begin

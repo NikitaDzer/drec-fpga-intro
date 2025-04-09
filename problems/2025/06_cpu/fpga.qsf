@@ -19,7 +19,7 @@
 #
 # Quartus Prime
 # Version 23.1std.1 Build 993 05/14/2024 SC Lite Edition
-# Date created = 03:19:20  March 20, 2025
+# Date created = 21:16:13  November 04, 2024
 #
 # -------------------------------------------------------------------------- #
 #
@@ -40,9 +40,12 @@
 
 # Project-Wide Assignments
 # ========================
-set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 16.1.0
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "22:31:17  DECEMBER 02, 2017"
 set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.1 Lite Edition"
-set_global_assignment -name SDC_FILE fpga.sdc
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output
+set_global_assignment -name SMART_RECOMPILE OFF
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 set_global_assignment -name VERILOG_FILE src/fpga_top.v
 set_global_assignment -name VERILOG_FILE src/system_top.v
 set_global_assignment -name VERILOG_FILE src/mux4.v
@@ -52,8 +55,9 @@ set_global_assignment -name VERILOG_FILE src/mem_xbar.v
 set_global_assignment -name VERILOG_FILE src/imem.v
 set_global_assignment -name VERILOG_FILE src/cpu_top.v
 set_global_assignment -name VERILOG_FILE src/core.v
-set_global_assignment -name VERILOG_FILE src/control.v
-set_global_assignment -name VERILOG_FILE src/cmp.v
+set_global_assignment -name VERILOG_FILE src/decoder.v
+set_global_assignment -name VERILOG_FILE src/decoder_imm.v
+set_global_assignment -name VERILOG_FILE src/bu.v
 set_global_assignment -name VERILOG_FILE src/alu.v
 set_global_assignment -name VERILOG_FILE src/lsu.v
 set_global_assignment -name VERILOG_FILE src/hex_display.v
@@ -61,16 +65,15 @@ set_global_assignment -name VERILOG_FILE src/mmio_xbar.v
 set_global_assignment -name VERILOG_FILE src/ctrl_74hc595.v
 set_global_assignment -name QIP_FILE src/altera/ram1rw32x256.qip
 set_global_assignment -name QIP_FILE src/altera/imem1r32x256.qip
-set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 
 # Pin & Location Assignments
 # ==========================
-set_location_assignment PIN_AA1 -to DS
-set_location_assignment PIN_Y2 -to OE
-set_location_assignment PIN_W1 -to SHCP
-set_location_assignment PIN_Y1 -to STCP
 set_location_assignment PIN_T22 -to CLK
 set_location_assignment PIN_U20 -to RSTN
+set_location_assignment PIN_AA1 -to DS
+set_location_assignment PIN_Y2 	-to OE
+set_location_assignment PIN_W1 	-to SHCP
+set_location_assignment PIN_Y1 	-to STCP
 
 # Classic Timing Assignments
 # ==========================
@@ -78,20 +81,31 @@ set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name NOMINAL_CORE_SUPPLY_VOLTAGE 1.2V
 
-# Compiler Assignments
-# ====================
-set_global_assignment -name OPTIMIZATION_MODE BALANCED
-
 # Analysis & Synthesis Assignments
 # ================================
+set_global_assignment -name SYNTH_MESSAGE_LEVEL HIGH
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name TOP_LEVEL_ENTITY fpga_top
 
 # Fitter Assignments
 # ==================
-set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
 set_global_assignment -name DEVICE EP4CE15F23C8
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
+set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
+
+# Assembler Assignments
+# =====================
+set_global_assignment -name ENABLE_OCT_DONE OFF
+set_global_assignment -name POR_SCHEME "INSTANT ON"
+set_global_assignment -name EN_USER_IO_WEAK_PULLUP ON
+set_global_assignment -name POF_VERIFY_PROTECT OFF
+set_global_assignment -name EN_SPI_IO_WEAK_PULLUP ON
+set_global_assignment -name ENABLE_SPI_MODE_CHECK OFF
+set_global_assignment -name FORCE_SSMCLK_TO_ISMCLK ON
+set_global_assignment -name FALLBACK_TO_EXTERNAL_FLASH OFF
+set_global_assignment -name EXTERNAL_FLASH_FALLBACK_ADDRESS 0
+set_global_assignment -name USE_CONFIGURATION_DEVICE OFF
 
 # EDA Netlist Writer Assignments
 # ==============================
@@ -156,10 +170,11 @@ set_global_assignment -name EDA_TEST_BENCH_NAME cpu_top_tb -section_id eda_simul
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 
 	# end DESIGN_PARTITION(Top)
 	# -------------------------
 
 # end ENTITY(fpga_top)
 # --------------------
+
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
