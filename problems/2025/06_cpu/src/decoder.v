@@ -188,6 +188,7 @@ always @( * ) begin
         o_rf_we = 0;
         o_wb_sel = `WB_SEL_ALU;
         o_cmp_op = `BU_NONE;
+        o_stall = 0;
 
         case ( f3 )
             `RV32I_LSU_S_F3_SB: o_mem_size = 1;
@@ -206,6 +207,7 @@ always @( * ) begin
         o_rf_we     = 0;
         o_cmp_op    = `BU_NONE;
         o_mem_size  = 0;
+        o_stall     = 0; 
     end
 end
 

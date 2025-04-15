@@ -31,6 +31,7 @@ wire [31:0] src1;
 wire [31:0] src2;
 reg  [31:0] dst;
 wire        rf_we;
+wire        wr_en = rf_we && !is_stalled;
 
 reg [31:0] alu_a;
 reg [31:0] alu_b;
@@ -102,7 +103,7 @@ rf_2r1w rf_2r1w_inst (
 
     .i_wr_addr(rd),
     .i_wr_data(dst),
-    .i_wr_en(rf_we)
+    .i_wr_en(wr_en)
 );
 
 alu alu_inst (
