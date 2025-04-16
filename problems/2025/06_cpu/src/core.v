@@ -13,7 +13,7 @@ module core (
     output wire [31:0] o_mem_data,
     output wire        o_mem_we,
     output wire  [3:0] o_mem_mask,
-    output wire [31:0] i_mem_data
+    input  wire [31:0] i_mem_data
 );
 
 reg [29:0] pc;
