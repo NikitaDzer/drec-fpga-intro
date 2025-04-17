@@ -1,0 +1,85 @@
+module fp16u_tb;
+
+reg clk = 1'b0;
+
+always begin
+    #1 clk <= ~clk;
+end
+
+wire [15:0] a, b, c, z;
+
+wire       z_sign = z[15];
+wire [4:0] z_bexp = z[14:10];
+wire [9:0] z_mant = z[9:0];
+
+wire       c_sign = c[15];
+wire [4:0] c_bexp = c[14:10];
+wire [9:0] c_mant = c[9:0];
+
+wire       rmode    = 0;
+wire       overflow = 0;
+wire       invalid  = 0;
+
+fp16add_2stage fp16add_2stage (
+    .clk       (clk),
+    .i_a       (a),
+    .i_b       (b),
+    .i_rmode   (rmode),
+    .o_res     (c)
+);
+
+reg [3*16-1:0] test[`TEST_SIZE];
+reg [$clog2(`TEST_SIZE)-1:0] idx = 0;
+
+reg ok, pass = 1;
+
+assign {a, b, z} = test[idx];
+
+initial begin
+    $readmemh("test.txt", test);
+end
+
+wire signed [14:0] diff = $signed(c[14:0]) - $signed(z_f1[14:0]);
+
+reg [15:0] a_f1, b_f1, z_f1;
+
+wire       z_sign_f1 = z_f1[15];
+wire [4:0] z_bexp_f1 = z_f1[14:10];
+wire [9:0] z_mant_f1 = z_f1[9:0];
+
+always @(posedge clk) begin
+    a_f1 <= a;
+    b_f1 <= b;
+    z_f1 <= z;
+end
+
+always @(*) begin
+    if (z_bexp_f1 == 5'h0) // Zero/denormal
+        ok = (c_bexp == 5'h00) && (c_mant == 10'h0);
+    else if (z_bexp == 5'h1F) // Inf/NaN
+        ok = (c_bexp == 5'h1F) && (c_mant == 10'h0) && (c_sign == z_sign_f1);
+    else
+        ok = ($abs(diff) < 5) && (c_sign == z_sign_f1);
+end
+
+always @(posedge clk) begin
+    idx <= idx + 1;
+    if (`DEBUG || !ok) begin
+        $display("[%d] %h %h -> %h z=%h ok=%d", idx - 1, a_f1, b_f1, c, z_f1, ok);
+    end
+
+    if ( idx > 0 )
+        pass <= ok ? pass : 0;
+
+    if (idx == `TEST_SIZE-1) begin
+        $display("Result: %s", pass ? "PASS" : "FAIL");
+        $finish;
+    end
+end
+
+initial begin
+    $dumpvars;
+    $display("Test size: %d", `TEST_SIZE);
+end
+
+endmodule
