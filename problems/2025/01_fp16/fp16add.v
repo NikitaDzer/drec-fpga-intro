@@ -42,10 +42,10 @@ reg sign_result;
 reg [(1+5)-1:0] exp_result;
 reg [4:0]       exp_diff;
 
-reg [(1+10+31)-1:0]   mantissa_extended_a;
-reg [(1+10+31)-1:0]   mantissa_extended_b;
-reg [(1+1+10+31)-1:0] mantissa_extended_sum;
-reg [5:0]             mantissa_pos;
+reg [(1+1+10)-1:0]   mantissa_extended_a;
+reg [(1+1+10)-1:0]   mantissa_extended_b;
+reg [(1+1+1+10)-1:0] mantissa_extended_sum;
+reg [(1+5)-1:0]      bit_counter;
 
 always @( * ) begin
     if ( is_nan_a || is_nan_b ) begin
@@ -60,8 +60,8 @@ always @( * ) begin
         // DAZ
         o_res = {sign_a & sign_b, 15'h0};
     end else begin
-        mantissa_extended_a = {1'b1, mantissa_a, 31'b0};
-        mantissa_extended_b = {1'b1, mantissa_b, 31'b0};
+        mantissa_extended_a = {1'b1, mantissa_a, 1'b0};
+        mantissa_extended_b = {1'b1, mantissa_b, 1'b0};
 
         if ( exp_a >= exp_b ) begin
             exp_result = exp_a;
@@ -85,14 +85,28 @@ always @( * ) begin
         end
 
         // Normalize
-        if ( mantissa_extended_sum[42] ) begin
+        if ( mantissa_extended_sum[12] ) begin
             mantissa_extended_sum = mantissa_extended_sum >> 1;
             exp_result = exp_result + 1;
         end else begin
-            while ( !mantissa_extended_sum[41] && exp_result > 0 ) begin
-                mantissa_extended_sum = mantissa_extended_sum << 1;
-                exp_result = exp_result - 1;
-            end
+            casex ( mantissa_extended_sum[11:0] )
+                12'b1???????????: bit_counter = 0;
+                12'b01??????????: bit_counter = 1;
+                12'b001?????????: bit_counter = 2;
+                12'b0001????????: bit_counter = 3;
+                12'b00001???????: bit_counter = 4;
+                12'b000001??????: bit_counter = 5;
+                12'b0000001?????: bit_counter = 6;
+                12'b00000001????: bit_counter = 7;
+                12'b000000001???: bit_counter = 8;
+                12'b0000000001??: bit_counter = 9;
+                12'b00000000001?: bit_counter = 10;
+                12'b000000000001: bit_counter = 11;
+                default: bit_counter = exp_result;
+            endcase
+            
+            mantissa_extended_sum = mantissa_extended_sum << bit_counter;
+            exp_result = exp_result >= bit_counter ? exp_result - bit_counter : 0;
         end
 
         // Rounding
@@ -103,13 +117,13 @@ always @( * ) begin
         end
 
         // FTZ
-        if ( exp_result == 0)
+        if ( exp_result == 0 )
             mantissa_extended_sum = 0;
 
         if ( exp_result >= 31 ) begin
             o_res = {sign_result, FP16_INFINITY_NO_SIGN};
         end else begin
-            o_res = {sign_result, exp_result[4:0], mantissa_extended_sum[40:31]};
+            o_res = {sign_result, exp_result[4:0], mantissa_extended_sum[10:1]};
         end
     end
 end

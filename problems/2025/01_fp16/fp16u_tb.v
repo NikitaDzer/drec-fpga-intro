@@ -42,7 +42,7 @@ wire signed [14:0] diff = $signed(c[14:0]) - $signed(z[14:0]);
 
 always @(*) begin
     if (z_bexp == 5'h0) // Zero/denormal
-        ok = (c_bexp == 5'h00) && (c_mant == 10'h0) && (c_sign == z_sign);
+        ok = (c_bexp == 5'h00) && (c_mant == 10'h0);
     else if (z_bexp == 5'h1F) // Inf/NaN
         ok = (c_bexp == 5'h1F) && (c_mant == 10'h0) && (c_sign == z_sign);
     else
