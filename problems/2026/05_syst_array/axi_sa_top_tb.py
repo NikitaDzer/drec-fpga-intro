@@ -91,8 +91,8 @@ class SystolicArrayTestbench:
         # Pack matrix row-major order
         for i in range(rows):
             for j in range(cols):
-                row = rows - i - 1 if is_b else i
-                byte_data.extend(matrix[row][j].tobytes())
+                # row = rows - i - 1 if is_b else i
+                byte_data.extend(matrix[i][j].tobytes())
         
         return bytes(byte_data)
     
@@ -239,7 +239,7 @@ class SystolicArrayTestbench:
                     C = 0;
                     for k in range(SIZE):
                         C += self.test_data_a[i][k] * self.test_data_b[k][j]
-                    self.matrix_c_actual[i][j] = C
+                    self.matrix_c_expected[i][j] = C
             
             # Compare
             if self.matrix_c_actual is not None:
