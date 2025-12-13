@@ -1,51 +1,56 @@
-module sa_axi #(
+module systolic_data_ctrl_fixed #(
     parameter WIDTH = 16,
-    parameter SIZE = 4
+    parameter SIZE = 4,
+    parameter AXI_DATA_WIDTH = WIDTH * SIZE
 )(
-    input  logic                       clk,
-    input  logic                       rst_n,
+    // Clock and reset
+    input  logic                      clk,
+    input  logic                      rst_n,
     
-    // AXI4 R
-    input  logic  [AXI_DATA_WIDTH-1:0] rdata,
-    input  logic                       rvalid,
-    output logic                       rready,
-    input  logic                       rlast,
+    // AXI4 Master Read Data Channel
+    input  logic [AXI_DATA_WIDTH-1:0] rdata,
+    input  logic                      rvalid,
+    output logic                      rready,
+    input  logic                      rlast,
     
-    // AXI4 W
-    output logic  [AXI_DATA_WIDTH-1:0] wdata,
-    output logic                       wvalid,
-    input  logic                       wready,
-    output logic                       wlast,
-
-    // SA ports
-    output logic                       vld_axi2sa,
-    output logic                       rdy_axi2sa,
-    input  logic                       vld_sa2axi,
-    input  logic                       rdy_sa2axi,
-
-    output logic [SIZE-1:0][WIDTH-1:0] ab_line,
-    input  logic [SIZE-1:0][WIDTH-1:0] c_line
+    // AXI4 Master Write Data Channel
+    output logic [AXI_DATA_WIDTH-1:0] wdata,
+    output logic                      wvalid,
+    input  logic                      wready,
+    output logic                      wlast,
+    
+    // AXI4 Write Response Channel
+    input  logic                      bvalid,
+    output logic                      bready,
+    
+    // Interface to systolic array
+    output logic                      sa_i_vld,
+    output logic                      sa_i_rdy,
+    input  logic                      sa_o_vld,
+    input  logic                      sa_o_rdy,
+    output logic [SIZE-1:0][WIDTH-1:0] sa_i_ab_line,
+    input  logic [SIZE-1:0][WIDTH-1:0] sa_o_c
 );
 
-localparam AXI_DATA_WIDTH = WIDTH * SIZE;
+assign sa_i_ab_line = rdata;
+assign sa_i_vld = rvalid;
+assign rready = sa_o_rdy;
 
-assign ab_line    = rdata;
-assign vld_axi2sa = rvalid;
-assign rready     = rdy_sa2axi;
+assign wdata  = sa_o_c;
+assign wvalid = sa_o_vld;
+assign sa_i_rdy = wready;
 
-assign wdata      = c_line; 
-assign wvalid     = vld_sa2axi;
-assign rdy_axi2sa = wready;
+logic [$clog2(SIZE):0] count = 0;
+assign wlast = (count == SIZE-1) & sa_o_vld;
 
-logic [$clog2(SIZE):0] c_rows_count = 0;
-assign wlast = (c_rows_count == SIZE-1) & vld_sa2axi;
+assign bready = 1;
 
 always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n)
-        c_rows_count <= 0;
+        count <= 0;
     else begin
-        if (vld_sa2axi)
-            c_rows_count <= (c_rows_count == SIZE-1) ? 0 : c_rows_count + 1;
+        if (sa_o_vld)
+            count <= (count == SIZE-1) ? 0 : count + 1;
     end
 end
 
