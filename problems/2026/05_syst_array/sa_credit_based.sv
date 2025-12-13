@@ -12,11 +12,10 @@ module sa_credit_based #(
     output logic                       o_rdy,
 
     input  logic [SIZE-1:0][WIDTH-1:0] i_ab_line,
-    output logic [SIZE-1:0][WIDTH-1:0] o_c
+    output logic [SIZE-1:0][WIDTH-1:0] o_c_line
 );
 
-localparam CNT_WIDTH = $clog2(SIZE) + 1;
-logic [CNT_WIDTH-1:0] count = 0;
+logic [$clog2(SIZE):0] count = 0;
 logic last_fragment = 0;
 logic is_a = 0;
 
@@ -70,7 +69,7 @@ fifo #(.DATA_WIDTH(WIDTH * SIZE), .DEPTH(DEPTH)) fifo_inst (
     .clk(clk),
     .rst_n(rst_n),
     .i_rd_en(fifo_rd_en),
-    .o_rd_data(o_c),
+    .o_rd_data(o_c_line),
     .i_wr_en(fifo_wr_en),
     .i_wr_data(c_line),
     .o_full(fifo_full),

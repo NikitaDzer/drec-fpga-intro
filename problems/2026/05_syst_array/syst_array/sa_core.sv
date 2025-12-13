@@ -14,11 +14,11 @@ module sa_core #(
     output logic [SIZE-1:0][WIDTH-1:0] o_c_line
 );
 
-logic               we   [SIZE:0][SIZE:0];
-logic               a_vld[SIZE:0][SIZE:0];
-logic               c_vld[SIZE:0][SIZE:0];
-logic [WIDTH - 1:0] a    [SIZE:0][SIZE:0];
-logic [WIDTH - 1:0] c    [SIZE:0][SIZE:0];
+logic             we   [SIZE:0][SIZE:0];
+logic             a_vld[SIZE:0][SIZE:0];
+logic             c_vld[SIZE:0][SIZE:0];
+logic [WIDTH-1:0] a    [SIZE:0][SIZE:0];
+logic [WIDTH-1:0] c    [SIZE:0][SIZE:0];
 
 generate
 
