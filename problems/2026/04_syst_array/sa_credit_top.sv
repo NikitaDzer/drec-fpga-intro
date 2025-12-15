@@ -1,4 +1,4 @@
-module sa_credit #(
+module sa_credit_top #(
     parameter WIDTH = 16,
     parameter SIZE = 4,
     parameter DEPTH = 2 * SIZE
