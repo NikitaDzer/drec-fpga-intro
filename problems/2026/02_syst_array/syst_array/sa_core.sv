@@ -44,22 +44,22 @@ end
 for (genvar i = 0; i < SIZE; i++) begin : pe_outer
     for (genvar j = 0; j < SIZE; j++) begin : pe_inner
         pe #(.WIDTH(WIDTH)) pe_inst (
-            .clk      (clk),
-            .rst_n    (rst_n),
+            .clk     (clk),
+            .rst_n   (rst_n),
 
-            .i_we     (   we[i][j]),
-            .i_a_vld  (a_vld[i][j]),
-            .i_c_vld  (c_vld[i][j]),
+            .i_we    (   we[i][j]),
+            .i_a_vld (a_vld[i][j]),
+            .i_c_vld (c_vld[i][j]),
 
-            .i_a      (    a[i][j]),
-            .i_c      (    c[i][j]),
+            .i_a     (    a[i][j]),
+            .i_c     (    c[i][j]),
 
-            .o_we     (   we[i+1][j  ]),
-            .o_a_vld  (a_vld[i  ][j+1]),
-            .o_c_vld  (c_vld[i+1][j  ]),
+            .o_we    (   we[i+1][j  ]),
+            .o_a_vld (a_vld[i  ][j+1]),
+            .o_c_vld (c_vld[i+1][j  ]),
 
-            .o_a      (a[i  ][j+1]),
-            .o_c      (c[i+1][j  ])
+            .o_a     (a[i  ][j+1]),
+            .o_c     (c[i+1][j  ])
         );
     end
 end

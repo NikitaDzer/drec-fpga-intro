@@ -1,15 +1,15 @@
 TOP_TB_NAME := sa_top_tb
 
-TB_LIST := src/sa_top_tb.sv src/sa_top_tb.cc
+TB_LIST := sa_top_tb.sv sa_top_tb.cc
 
 RTL_LIST :=  \
-	src/sr.sv \
-	src/pe.sv \
-	src/delay_line.sv \
-	src/delay_line_rev.sv \
-	src/we_line.sv \
-	src/sa_core.sv \
-	src/sa_top.sv
+	syst_array/sr.sv \
+	syst_array/pe.sv \
+	syst_array/delay_line.sv \
+	syst_array/delay_line_rev.sv \
+	syst_array/we_line.sv \
+	syst_array/sa_core.sv \
+	syst_array/sa_top.sv
 
 VCD_FILE := dump.vcd
 
