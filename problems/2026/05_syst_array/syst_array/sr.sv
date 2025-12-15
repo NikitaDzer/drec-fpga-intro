@@ -18,7 +18,6 @@ always_ff @(posedge clk or negedge rst_n) begin
             reg_data[i] <= 0;
     else begin
         reg_data[0] <= i_data;
-    
         for (int i = 1; i < SIZE; i++) begin
             reg_data[i] <= reg_data[i - 1];
         end

@@ -1,4 +1,4 @@
-module credit_cnt #(
+module credit #(
     parameter DEPTH = 4
 )(
     input  logic clk,
@@ -11,16 +11,15 @@ module credit_cnt #(
     output logic o_rdy
 );
 
-localparam WIDTH = $clog2(DEPTH) + 1;
-logic [WIDTH-1:0] count = DEPTH[WIDTH-1:0];
+logic [$clog2(DEPTH):0] count = DEPTH[$clog2(DEPTH):0];
 
 assign o_vld = i_vld & (count > 0);
 assign o_rdy = (count > 0);
 
 always_ff @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-        count <= DEPTH[WIDTH-1:0];
-    end else begin
+    if (!rst_n)
+        count <= DEPTH[$clog2(DEPTH):0];
+    else begin
         unique case ({o_vld, i_inc})
             2'b10: count <= count - 1;
             2'b01: count <= count + 1;

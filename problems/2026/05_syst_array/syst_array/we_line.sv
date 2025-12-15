@@ -8,14 +8,13 @@ module we_line #(
     output logic [SIZE-1:0] o_we_line
 );
 
-/**
- * Implementation of delay line with custom input generation.
- *
- * clk ->
- * we        |     1 |     0 |     1
- * we_gen    | 2'b10 | 2'b00 | 2'b01
- * o_we_line | 2'b00 | 2'b10 | 2'b01
- */
+// Implementation of delay line with custom input generation.
+//
+// clk ->
+// we        |     1 |     0 |     1
+// we_gen    | 2'b10 | 2'b00 | 2'b01
+// o_we_line | 2'b00 | 2'b10 | 2'b01
+//
 logic [SIZE-1:0] we_shift = 1 << (SIZE-1);
 logic [SIZE-1:0] we_gen;
 
@@ -30,11 +29,11 @@ always_ff @(posedge clk or negedge rst_n) begin
 end
 
 delay_line #(.WIDTH(1), .SIZE(SIZE)) dl_inst (
-    .clk   (clk),
-    .rst_n (rst_n),
+    .clk    (clk),
+    .rst_n  (rst_n),
 
-    .i_data(we_gen),
-    .o_data(o_we_line)
+    .i_data (we_gen),
+    .o_data (o_we_line)
 );
 
 endmodule

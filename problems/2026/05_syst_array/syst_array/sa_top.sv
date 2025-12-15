@@ -15,9 +15,7 @@ module sa_top #(
 );
 
 
-/**
- * Delayed input data and valid lines.
- */
+// Delayed input data and valid lines
 logic [SIZE-1:0]            we_line;
 logic [SIZE-1:0]            a_vld_line;
 logic [SIZE-1:0]            c_vld_line_top2core;
@@ -60,9 +58,7 @@ delay_line #(.WIDTH(WIDTH), .SIZE(SIZE)) dl_a_inst (
 );
 
 
-/**
- * Delayed output data and valid lines.
- */
+// Delayed output data and valid lines
 logic [SIZE-1:0]            c_vld_line_core2top;
 logic [SIZE-1:0]            c_vld_line_delayed_core2top;
 logic [SIZE-1:0][WIDTH-1:0] c_line_core2top;
@@ -87,9 +83,7 @@ delay_line_rev #(.WIDTH(WIDTH), .SIZE(SIZE)) dl_c_core2top_inst (
 );
 
 
-/**
- * Systolic array core.
- */
+// Systolic array core
 sa_core #(.WIDTH(WIDTH), .SIZE(SIZE)) sa_core_inst(
     .clk          (clk),
     .rst_n        (rst_n),

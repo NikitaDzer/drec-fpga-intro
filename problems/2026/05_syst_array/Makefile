@@ -3,7 +3,6 @@ SIM ?= verilator
 TOPLEVEL_LANG = verilog
 
 VERILOG_SOURCES += \
-	sa_credit_based.sv \
 	syst_array/sa_top.sv \
 	syst_array/sa_core.sv \
 	syst_array/pe.sv \
@@ -11,17 +10,15 @@ VERILOG_SOURCES += \
 	syst_array/we_line.sv \
 	syst_array/delay_line.sv \
 	syst_array/delay_line_rev.sv \
-	ctrl/credit.sv \
-	ctrl/fifo.sv \
-	addr_gen/axi_addr_gen.sv \
-	axi_sa.sv \
-	axi_sa_top.sv
+	credit/credit.sv \
+	credit/fifo.sv \
+	axi/addr_gen.sv \
+	axi/sa_ctrl.sv \
+ 	sa_credit_top.sv \
+	sa_axi_top.sv
 
-
-
-
-TOPLEVEL = axi_sa_top
-MODULE   = axi_sa_top_tb
+TOPLEVEL = sa_axi_top
+MODULE   = sa_axi_top_tb
 
 ifeq ($(SIM), verilator)
     EXTRA_ARGS += --trace --trace-fst --trace-structs
