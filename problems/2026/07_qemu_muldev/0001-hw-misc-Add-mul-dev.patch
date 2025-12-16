@@ -63,6 +63,80 @@ index d02d96e..807ff43 100644
  
  # RISC-V devices
  system_ss.add(when: 'CONFIG_MCHP_PFSOC_DMC', if_true: files('mchp_pfsoc_dmc.c'))
+diff --git a/hw/misc/mul-dev.c b/hw/misc/mul-dev.c
+new file mode 100644
+index 0000000..c02e5a2
+--- /dev/null
++++ b/hw/misc/mul-dev.c
+@@ -0,0 +1,68 @@
++#include "qemu/osdep.h"
++#include "qemu/log.h"
++
++#include "hw/misc/mul-dev.h"
++
++static uint64_t mul_dev_read(void *opaque, hwaddr addr, unsigned len)
++{
++    MulDev *dev = opaque;
++
++    if (addr != 0x0)
++        return 0;
++
++    return dev->lhs * dev->rhs;
++}
++
++static void mul_dev_write(void *opaque, hwaddr addr, uint64_t val,
++                          unsigned len)
++{
++    MulDev *dev = opaque;
++
++    if (addr == 0x8)
++        dev->lhs = val;
++    else if (addr == 0x10)
++        dev->rhs = val;
++}
++
++static const MemoryRegionOps mul_dev_ops = {
++    .read  = mul_dev_read,
++    .write = mul_dev_write,
++    .endianness = DEVICE_LITTLE_ENDIAN,
++};
++
++static void mul_dev_init(Object *obj)
++{
++    MulDev *s = MUL_DEV(obj);
++    SysBusDevice *sbd = SYS_BUS_DEVICE(obj);
++
++    qemu_log("%s: enter\n", __func__);
++
++    s->lhs = 0;
++    s->rhs = 0;
++
++    memory_region_init_io(&s->iomem, OBJECT(s), &mul_dev_ops, s,
++                          TYPE_MUL_DEV, MUL_DEV_SIZE);
++    sysbus_init_mmio(sbd, &s->iomem);
++}
++
++static void mul_dev_class_init(ObjectClass *klass, void *data)
++{
++    DeviceClass *dc = DEVICE_CLASS(klass);
++    dc->desc = TYPE_MUL_DEV;
++    set_bit(DEVICE_CATEGORY_MISC, dc->categories);
++}
++
++static const TypeInfo mul_dev_info = {
++    .name           = TYPE_MUL_DEV,
++    .parent         = TYPE_SYS_BUS_DEVICE,
++    .instance_size  = sizeof(MulDev),
++    .instance_init  = mul_dev_init,
++    .class_init     = mul_dev_class_init,
++};
++
++static void inc_dev_register_types(void)
++{
++    type_register_static(&mul_dev_info);
++}
++
++type_init(inc_dev_register_types)
 diff --git a/include/hw/arm/virt.h b/include/hw/arm/virt.h
 index aca4f80..51031bc 100644
 --- a/include/hw/arm/virt.h
