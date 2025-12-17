@@ -5,11 +5,12 @@ from cocotb.queue import Queue
 import numpy as np
 import random
 import logging
-from cocotbext.axi import AxiBus, AxiSlave, AxiRam
+from cocotbext.axi import AxiBus, AxiSlave, AxiRam, AxiLiteMaster, AxiLiteBus
 
 WIDTH = 16
 SIZE = 4
 AXI_DATA_WIDTH = WIDTH * SIZE
+MATRIX_ADDR_MAPPED_ADDR = 0x0;
 
 class SATestbench:
     def __init__(self, dut):
@@ -18,6 +19,7 @@ class SATestbench:
         self.log.setLevel(logging.INFO)
         
         self.setup_axi_slave()
+        self.setup_axil_master()
         
         self.matrix_a = None
         self.matrix_b = None
@@ -36,11 +38,18 @@ class SATestbench:
             reset_active_level=False,
             size=2**16
         )
+
+    def setup_axil_master(self):
+        self.axil = AxiLiteMaster(
+            AxiLiteBus.from_prefix(self.dut, "s_axil"),
+            self.dut.clk,
+            self.dut.rst_n,
+            reset_active_level=False
+        )
     
 
     async def reset(self):
         self.dut.rst_n.value = 0
-        self.dut.i_start.value = 0
         await ClockCycles(self.dut.clk, 5)
         self.dut.rst_n.value = 1
         await ClockCycles(self.dut.clk, 5)
@@ -90,32 +99,32 @@ class SATestbench:
 
     async def load_matrix_b(self, base_value):
         self.matrix_b = self.generate_matrix(base_value)
-        self.dut.i_ab_addr.value = self.matrix_b_addr
         
         await self.write_matrix_to_memory(
-            0x2000,
+            self.matrix_b_addr,
             self.matrix_b
         )
         
-        self.dut.i_start.value = 1
-        await RisingEdge(self.dut.clk)
-        self.dut.i_start.value = 0
+        resp = await self.axil.write(MATRIX_ADDR_MAPPED_ADDR, self.matrix_b_addr.to_bytes(4, 'little'))
+        assert resp.resp == 0, f"Expected OKAY (0), got {resp.resp}"
+
         await ClockCycles(self.dut.clk, 4 * SIZE)
     
 
     async def load_matrix_a(self, base_value):
         self.matrix_a = self.generate_matrix(base_value)
-        self.dut.i_ab_addr.value = self.matrix_a_addr
-        self.dut.i_c_addr.value = self.matrix_c_addr
         
         await self.write_matrix_to_memory(
             self.matrix_a_addr,
             self.matrix_a
         )
         
-        self.dut.i_start.value = 1
-        await RisingEdge(self.dut.clk)
-        self.dut.i_start.value = 0
+        resp = await self.axil.write(MATRIX_ADDR_MAPPED_ADDR, self.matrix_a_addr.to_bytes(4, 'little'))
+        assert resp.resp == 0, f"Expected OKAY (0), got {resp.resp}"
+
+        resp = await self.axil.write(MATRIX_ADDR_MAPPED_ADDR, self.matrix_c_addr.to_bytes(4, 'little'))
+        assert resp.resp == 0, f"Expected OKAY (0), got {resp.resp}"
+
         await ClockCycles(self.dut.clk, 4 * SIZE) 
 
         

@@ -14,6 +14,8 @@ VERILOG_SOURCES += \
 	credit/fifo.sv \
 	axi/addr_gen.sv \
 	axi/sa_ctrl.sv \
+	csr/csr.sv \
+	csr/axil2reg.sv \
  	sa_credit_top.sv \
 	sa_axi_top.sv
 
