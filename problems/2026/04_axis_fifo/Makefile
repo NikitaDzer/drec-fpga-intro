@@ -3,12 +3,14 @@ WAVES ?= 0
 COV ?= 0
 
 VERILOG_SOURCES :=  \
-	src/axis_fifo.sv
+	src/fifo_axis.sv \
+	src/fifo.sv \
+	fifo_axis_top.sv
 
 .PHONY: lint
 
-MODULE   = axis_fifo_tb
-TOPLEVEL = axis_fifo
+MODULE   = fifo_axis_top_tb
+TOPLEVEL = fifo_axis_top
 
 ifeq ($(SIM),verilator)
 ifeq ($(WAVES),1)

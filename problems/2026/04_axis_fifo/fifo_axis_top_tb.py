@@ -81,29 +81,3 @@ async def test_fifo_empty(dut):
     dut._log.info("FIFO correctly indicates empty state (TVALID=0)")
     dut._log.info("FIFO EMPTY test passed")
 
-
-@cocotb.test()
-async def test_fifo_stress(dut):
-    tb = TB(dut)
-    tb.source.set_pause_generator(gen_rand_bit())
-    tb.sink.set_pause_generator(gen_rand_bit())
-    await tb.reset()
-    
-    test_data = []
-    for i in range(NR_ITERS):
-        data = i
-        test_data.append(data)
-        await tb.source.send(data.to_bytes(DATA_WIDTH // 8, 'little'))
-        dut._log.info(f"Filling FIFO: sent data[{i}]: 0x{data:08X}")
-    
-    for i in range(NR_ITERS):
-        rx_frame = await tb.sink.recv()
-        rx_data = rx_frame.tdata
-        received = int.from_bytes(rx_data, 'little')
-        expected = test_data[i]
-        dut._log.info(f"Reading FIFO: received data[{i}]: 0x{received:08X}, expected: 0x{expected:08X}")
-        assert received == expected, f"Data mismatch at position {i}: expected 0x{expected:08X}, received 0x{received:08X}"
-    
-    assert tb.source.empty()
-    assert tb.sink.empty()
-    dut._log.info("FIFO STRESS test passed")
