@@ -1,13 +1,15 @@
 module addr_gen_axi #(
     parameter WIDTH = 16,
     parameter SIZE = 4,
-    parameter AXI_ADDR_WIDTH = 32
+    parameter AXI_ADDR_WIDTH = 32,
+    parameter AXI_DATA_WIDTH = WIDTH * SIZE
 )(
     input  logic                      clk,
     input  logic                      rst_n,
     
     // Control signal
     input  logic                      i_start,
+    output logic                      o_done,
     
     // Base address
     input  logic [AXI_ADDR_WIDTH-1:0] i_ab_addr,
@@ -35,17 +37,16 @@ module addr_gen_axi #(
 );
 
 
-localparam AXI_DATA_WIDTH = WIDTH * SIZE;
-
 typedef enum logic [1:0] {
     WAIT_B,
     LOAD_B,
-    WAIT_A
+    WAIT_A,
+    STORE_C
 } state_t;
 state_t state;
     
-assign arsize = $clog2(AXI_DATA_WIDTH/8)[2:0];
-assign awsize = $clog2(AXI_DATA_WIDTH/8)[2:0];
+assign arsize = $clog2(AXI_DATA_WIDTH/8);
+assign awsize = $clog2(AXI_DATA_WIDTH/8);
 
 // INCR burst
 assign arburst = 1;
@@ -54,7 +55,7 @@ assign awburst = 1;
 assign arlen = state == WAIT_A ? SIZE-1 : 0;
 assign awlen = SIZE-1;
 
-// Don't mind B channel
+// Always accept B channel from slave.
 assign bready = 1;
 
 // Load matrix B from the last line to the first
@@ -76,6 +77,7 @@ always_ff @(posedge clk or negedge rst_n) begin
         state <= WAIT_B;
         b_lines_count <= 0;
         b_addr <= 0;
+        o_done <= 1'b0;
     end else begin
         case (state)
             WAIT_B: begin
@@ -83,6 +85,7 @@ always_ff @(posedge clk or negedge rst_n) begin
                     state <= LOAD_B;
                     b_lines_count <= 1;
                     b_addr <= i_ab_addr + (AXI_DATA_WIDTH/8) * (SIZE-2);
+                    o_done <= 1'b0;
                 end
             end
 
@@ -101,7 +104,14 @@ always_ff @(posedge clk or negedge rst_n) begin
                 
             WAIT_A: begin
                 if (arvalid & arready & awvalid & awready) begin
+                    state <= STORE_C;
+                end
+            end
+
+            STORE_C: begin
+                if (bvalid & bready) begin
                     state <= WAIT_B;
+                    o_done <= 1'b1;
                 end
             end
 

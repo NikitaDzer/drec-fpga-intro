@@ -16,7 +16,7 @@ module sa_csr #(
     output logic                       o_invalid_addr
 );
 
-localparam MATRIX_ADDR_MAPPED_ADDR = 32'h0000_0000;
+localparam MATRIX_ADDR_MAPPED_ADDR = 32'h4000_0000;
 
 typedef enum logic [1:0] {
     WAIT_B,

@@ -1,6 +1,7 @@
 module sa_ctrl_axi #(
     parameter WIDTH = 16,
-    parameter SIZE = 4
+    parameter SIZE = 4,
+    parameter AXI_DATA_WIDTH = WIDTH * SIZE
 )(
     input  logic                       clk,
     input  logic                       rst_n,
@@ -30,9 +31,7 @@ module sa_ctrl_axi #(
 );
 
 
-localparam AXI_DATA_WIDTH = WIDTH * SIZE;
-
-// Load A-B matrices
+ // Load A-B matrices
 assign ab_line_axi2sa = rdata;
 assign vld_axi2sa     = rvalid;
 assign rready         = rdy_sa2axi;

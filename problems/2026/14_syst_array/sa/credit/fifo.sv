@@ -1,6 +1,7 @@
 module fifo #(
     parameter DATA_WIDTH = 8,
-    parameter DEPTH = 4
+    parameter DEPTH = 4,
+    parameter ADDR_WIDTH = $clog2(DEPTH)
 ) (
     input  logic                  clk,
     input  logic                  rst_n, 
@@ -15,8 +16,7 @@ module fifo #(
     output logic                  o_empty
 );
 
-localparam ADDR_WIDTH = $clog2(DEPTH);
-    
+
 logic [DATA_WIDTH-1:0] fifo_mem [DEPTH-1:0];
     
 logic [ADDR_WIDTH-1:0] wr_ptr = 0;

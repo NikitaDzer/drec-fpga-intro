@@ -2,11 +2,17 @@ module sa_axi_top #(
     parameter WIDTH = 16,
     parameter SIZE = 4,
     parameter DEPTH = SIZE * 2,
-    parameter AXI_ADDR_WIDTH = 32
+    parameter AXI_ADDR_WIDTH = 32,
+    parameter AXI_DATA_WIDTH = SIZE * WIDTH,
+    parameter AXIL_ADDR_WIDTH = 32,
+    parameter AXIL_DATA_WIDTH = 32,
+    parameter AXIL_STRB_WIDTH = AXIL_DATA_WIDTH/8
 )(
     input  wire                       clk,
     input  wire                       rst_n,
     
+    output wire                       o_irq,
+
     // AXI4 AR
     output wire [AXI_ADDR_WIDTH-1:0]  m_axi_araddr,
     output wire                       m_axi_arid,
@@ -77,10 +83,6 @@ module sa_axi_top #(
     input  wire                       s_axil_rready  
 );
 
-localparam AXI_DATA_WIDTH = SIZE * WIDTH;
-localparam AXIL_ADDR_WIDTH = 32;
-localparam AXIL_DATA_WIDTH = 32;
-localparam AXIL_STRB_WIDTH = AXIL_DATA_WIDTH/8;
 
 wire vld_axi2sa;
 wire rdy_sa2axi;
@@ -111,6 +113,8 @@ addr_gen_axi #(
     .rst_n     (rst_n),
         
     .i_start   (start),
+    .o_done    (o_irq),
+
     .i_ab_addr (ab_addr),
     .i_c_addr  (c_addr),
         

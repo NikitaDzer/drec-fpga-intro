@@ -22,7 +22,7 @@ module sa_credit_top #(
 // Count read lines and switch between A and B matrices
 logic  [$clog2(SIZE):0] count = 0;
 logic  is_a = 0;
-logic  last_line = 0;
+logic  last_line;
 assign last_line = count == SIZE-1;
 
 always_ff @(posedge clk or negedge rst_n) begin
@@ -40,11 +40,11 @@ end
 
 
 // Signals to/from SA
-logic  a_vld = 0;
-logic  c_vld_top2sa = 0;
+logic  a_vld;
+logic  c_vld_top2sa;
 assign c_vld_top2sa = is_a & a_vld;
 
-logic  we = 0;
+logic  we;
 assign we = a_vld & !is_a;
 
 logic                       c_vld_sa2top;

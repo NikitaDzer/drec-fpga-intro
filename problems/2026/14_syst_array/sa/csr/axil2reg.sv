@@ -1,6 +1,9 @@
 module axil2reg #(
-   parameter AXIL_ADDR_WIDTH = 32
+   parameter AXIL_ADDR_WIDTH = 32,
+   parameter AXIL_DATA_WIDTH = AXIL_ADDR_WIDTH,
+   parameter AXIL_STRB_WIDTH = AXIL_ADDR_WIDTH/8
 ) (
+
    input  logic                       clk,
    input  logic                       rst_n,
 
@@ -28,8 +31,6 @@ module axil2reg #(
    input  logic                       i_csr_ok
 );
 
-localparam AXIL_DATA_WIDTH = AXIL_ADDR_WIDTH;
-localparam AXIL_STRB_WIDTH = AXIL_ADDR_WIDTH/8;
 localparam OKAY = 2'b00, SLVERR = 2'b10;
 
 logic idle, en_d;
@@ -49,15 +50,14 @@ always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         idle <= 1'b1;
         en_d <= 1'b0;
+        okay <= 1'b1;
     end else begin
         idle <= idle ? !(s_axil_awvalid && s_axil_wvalid) : s_axil_bready;
         en_d <= o_wr_en;
+        if (en_d) begin
+            okay <= i_csr_ok;
+        end
     end
 end
-
-always_ff @(posedge clk)
-    if (en_d) begin
-        okay <= i_csr_ok;
-    end
 
 endmodule
